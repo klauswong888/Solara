@@ -19,7 +19,11 @@ export default function Home() {
           }}
         />
         {/* 大屏：右下角四分之一圆 */}
-        <div className="hidden md:block absolute bottom-0 right-0 w-[100vw] h-[100vw]"
+        <div 
+          className="
+            hidden md:block absolute bottom-0 right-0
+            w-[100vw] h-[80vw]
+            pointer-events-none z-0"
           style={{
             background: `radial-gradient(
               circle at bottom right,

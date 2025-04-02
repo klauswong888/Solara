@@ -1,4 +1,6 @@
+# --------------------------------
 # Logs
+# --------------------------------
 logs
 *.log
 npm-debug.log*
@@ -7,18 +9,69 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# --------------------------------
+# Dependency directories
+# --------------------------------
+node_modules/
+
+# --------------------------------
+# Build output
+# --------------------------------
+dist/
+dist-ssr/
+build/
+out/
+.storybook-static/
+.coverage/
+
+# --------------------------------
+# Environment files
+# --------------------------------
+.env
+.env.*
+!.env.example
 *.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# --------------------------------
+# Cache/temp
+# --------------------------------
+.cache/
+.vite/
+.next/
+.nuxt/
+tmp/
+temp/
+*.tmp
+
+# --------------------------------
+# System files
+# --------------------------------
 .DS_Store
+Thumbs.db
+._*
+
+# --------------------------------
+# Editor configs
+# --------------------------------
+.vscode/
+!.vscode/extensions.json
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# --------------------------------
+# OS-specific
+# --------------------------------
+ehthumbs.db
+Icon?
+desktop.ini
+
+# --------------------------------
+# Optional: Lock files (if not used)
+# --------------------------------
+# yarn.lock
+# package-lock.json
+# pnpm-lock.yaml
