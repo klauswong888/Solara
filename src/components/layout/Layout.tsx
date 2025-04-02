@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import logo from "../../assets/logo.svg"; 
@@ -7,7 +7,7 @@ const Layout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#fffcf1]">
+    <div className="flex flex-col min-h-screen bg-[#FFF9E3] pt-4">
       <header className="p-4">
         <div className="flex items-center justify-between md:justify-start relative">
           {/* Logo */}
@@ -17,10 +17,39 @@ const Layout = () => {
           </div>
 
           {/* Center Nav (Desktop only) */}
-          <nav className="hidden md:flex items-center justify-center flex-1 gap-6">
-            <Link to="/" className="text-black hover:text-orange-500 font-medium">Home</Link>
-            <Link to="/HeatAlert" className="text-black hover:text-orange-500 font-medium">Heat Alert</Link>
-            <Link to="/Tips" className="text-black hover:text-orange-500 font-medium">Tailored Tips</Link>
+          <nav className="hidden md:flex items-center justify-center flex-1 gap-10">
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `font-medium hover:text-orange-600 ${
+                  isActive ? "text-orange-600" : "text-black"
+                }`
+              }
+            >
+              Home
+            </NavLink>
+
+            <NavLink
+              to="/HeatAlert"
+              className={({ isActive }) =>
+                `font-medium hover:text-orange-600 ${
+                  isActive ? "text-orange-600" : "text-black"
+                }`
+              }
+            >
+              Heat Alert
+            </NavLink>
+
+            <NavLink
+              to="/Tips"
+              className={({ isActive }) =>
+                `font-medium hover:text-orange-600 ${
+                  isActive ? "text-orange-600" : "text-black"
+                }`
+              }
+            >
+              Tailored Tips
+            </NavLink>
           </nav>
 
           {/* Track Water Button (Desktop only) */}
@@ -38,10 +67,39 @@ const Layout = () => {
 
         {/* Mobile Nav */}
         {isMenuOpen && (
-          <nav className="flex flex-col gap-2 mt-2 md:hidden">
-            <Link to="/" className="text-black hover:text-orange-500 font-medium">Home</Link>
-            <Link to="/HeatAlert" className="text-black hover:text-orange-500 font-medium">Heat Alert</Link>
-            <Link to="/Tips" className="text-black hover:text-orange-500 font-medium">Tailored Tips</Link>
+          <nav className="flex flex-col gap-4 mt-4 md:hidden">
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `font-medium hover:text-orange-600 ${
+                  isActive ? "text-orange-600" : "text-black"
+                }`
+              }
+            >
+              Home
+            </NavLink>
+
+            <NavLink
+              to="/HeatAlert"
+              className={({ isActive }) =>
+                `font-medium hover:text-orange-600 ${
+                  isActive ? "text-orange-600" : "text-black"
+                }`
+              }
+            >
+              Heat Alert
+            </NavLink>
+
+            <NavLink
+              to="/Tips"
+              className={({ isActive }) =>
+                `font-medium hover:text-orange-600 ${
+                  isActive ? "text-orange-600" : "text-black"
+                }`
+              }
+            >
+              Tailored Tips
+            </NavLink>
             <div className="flex justify-end">
                 <button className="bg-orange-500 hover:bg-orange-600 text-white text-sm px-4 py-2 rounded-full">
                     Track water consumption
@@ -51,7 +109,7 @@ const Layout = () => {
         )}
       </header>
 
-      <main className="flex-1 p-4">
+      <main className="flex-1">
         <Outlet />
       </main>
     </div>
