@@ -57,5 +57,5 @@ export default function UserLocationMap({ onLocationUpdate, lat, lng }: UserLoca
         }
     }, [lat, lng]);
 
-    return <div ref={mapRef} className="mt-4 w-full h-[350px] border rounded-md" />;
+    return <div ref={mapRef} className="mt-4 w-full h-[300px] border rounded-md" />;
 }
