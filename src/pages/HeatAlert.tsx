@@ -13,7 +13,7 @@ export default function HeatAlert() {
   const [longitude, setLongitude] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const weatherData = useWeather(latitude, longitude);
-  const [tab, setTab] = useState<"today" | "3days" | "7days">("today");
+  const [tab, setTab] = useState<"next24hours" | "3days" | "7days">("next24hours");
 
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -28,25 +28,27 @@ export default function HeatAlert() {
     }
   };
 
-  // Transform weather data for display
+  // Transform weather data for today's display (hourly data)
   const transformedData = Array.isArray(weatherData.hourlyTime)
-    ? weatherData.hourlyTime.map((time, index) => ({
-      date: new Date(time).toLocaleString("en-GB", { weekday: "long", day: "numeric", month: "short" }),
-      time: new Date(time).toLocaleString("en-GB", { hour: "2-digit" }),
-      temperature: weatherData.hourlyTemperature[index],
-    }))
+    ? weatherData.hourlyTime.slice(0, 24) // 
+      .map((time, index) => ({
+        time: time,
+        temperature: Number(weatherData.hourlyTemperature[index].toFixed(2)),
+        feelsLike: Number(weatherData.hourlyFeelsLike[index].toFixed(2)),
+      }))
     : [];
 
-  // Filter data based on selected tab
+  // Transform weather data for daily display (3days/7days)
   const dailyTransformedData = Array.isArray(weatherData.dailyTime)
     ? weatherData.dailyTime.map((time, index) => ({
-      date: new Date(time).toLocaleString("en-GB", { weekday: "long", day: "numeric", month: "short" }),
-      maxTemperature: weatherData.dailyMaxTemperature[index],
-      maxFeelsLike: weatherData.dailyMaxFeelsLike[index],
+      date: time,
+      maxTemperature: Number(weatherData.dailyMaxTemperature[index].toFixed(2)),
+      maxFeelsLike: Number(weatherData.dailyMaxFeelsLike[index].toFixed(2)),
     }))
+      .slice(0, tab === "3days" ? 3 : 7)
     : [];
 
-  // console.log("Weather data:", weatherData);
+  console.log("Weather data:", weatherData);
 
   // Handle location update
   const handleLocationUpdate = async (newAddress: string, lat: number, lng: number) => {
@@ -115,13 +117,13 @@ export default function HeatAlert() {
         <h2 className="text-2xl font-bold text-orange-500">Heat Severity</h2>
 
         <div className="flex items-center gap-2">
-          {["today", "3days", "7days"].map((t) => (
+          {["next24hours", "3days", "7days"].map((t) => (
             <button
               key={t}
               onClick={() => setTab(t as any)}
               className={`px-4 py-2 rounded-md ${tab === t ? "bg-orange-500 text-white" : "bg-gray-200"}`}
             >
-              {t === "today" ? "Today" : t === "3days" ? "3 Days" : "7 Days"}
+              {t === "next24hours" ? "Next 24 Hours" : t === "3days" ? "3 Days" : "7 Days"}
             </button>
           ))}
           <button
@@ -135,9 +137,9 @@ export default function HeatAlert() {
       </div>
 
       <div className="mt-4">
-        {tab === "today" && transformedData.length > 0 ? (
-          <WeatherDisplay type={tab} data={transformedData} />
-        ) : dailyTransformedData.length > 0 ? (
+        {tab === "next24hours" && transformedData.length > 0 ? (
+          <WeatherDisplay type="next24hours" data={transformedData} />
+        ) : (tab === "3days" || tab === "7days") && dailyTransformedData.length > 0 ? (
           <WeatherDisplay type={tab} data={dailyTransformedData} />
         ) : (
           <p>Loading weather data...</p>

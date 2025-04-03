@@ -3,30 +3,8 @@ import TemperatureBox from "./layout/TemperatureBox";
 import TemperatureChart from "./layout/TemperatureChart";
 
 interface WeatherDisplayProps {
-    type: "today" | "3days" | "7days";
-    data: { date: string; time: string; temperature: number; feelsLike: number }[];
-}
-
-// Summarize daily data
-function summarizeDailyData(data: { date: string; temperature: number; feelsLike: number }[]) {
-    const dailySummary: { date: string; temperature: number; feelsLike: number }[] = [];
-    const dailyData: { [key: string]: { maxTemp: number; maxFeelsLike: number } } = {};
-
-    data.forEach((d) => {
-        const day = d.date;
-        if (!dailyData[day]) {
-            dailyData[day] = { maxTemp: d.temperature, maxFeelsLike: d.feelsLike };
-        } else {
-            dailyData[day].maxTemp = Math.max(dailyData[day].maxTemp, d.temperature);
-            dailyData[day].maxFeelsLike = Math.max(dailyData[day].maxFeelsLike, d.feelsLike);
-        }
-    });
-
-    for (const [day, values] of Object.entries(dailyData)) {
-        dailySummary.push({ date: day, temperature: values.maxTemp, feelsLike: values.maxFeelsLike });
-    }
-
-    return dailySummary;
+    type: "next24hours" | "3days" | "7days";
+    data: { date?: string; time?: string; temperature?: number; feelsLike?: number; maxTemperature?: number; maxFeelsLike?: number }[];
 }
 
 export default function WeatherDisplay({ type, data }: WeatherDisplayProps) {
@@ -34,38 +12,65 @@ export default function WeatherDisplay({ type, data }: WeatherDisplayProps) {
         return <p>No weather data available.</p>;
     }
 
-    // **Today**: 显示折线图
-    if (type === "today") {
-        return (
-            <TemperatureChart
-                data={data.map((d) => ({ time: d.time, temperature: d.temperature }))}
-            />
-        );
-    }
+    return (
+        <div className="flex flex-col items-center justify-center gap-4 mt-4">
+            {/* Today: Show chart */}
+            {type === "next24hours" && (
+                <TemperatureChart data={data} />
+            )}
 
-    // **3days** 和 **7days**: 显示汇总温度块
-    if (type === "3days" || type === "7days") {
-        return (
-            <div className="flex flex-col items-center justify-center gap-2 mt-4">
-                <div className="flex justify-center gap-4">
-                    {data.map((d, index) => (
-                        <div key={index} className="text-center font-bold p-2">{d.date}</div>
-                    ))}
-                </div>
-                <div className="flex justify-center gap-4">
-                    {data.map((d, index) => (
-                        <TemperatureBox
-                            key={index}
-                            temperature={d.maxTemperature}
-                            feelsLike={d.maxFeelsLike}
-                            label={d.date}
-                        />
-                    ))}
-                </div>
+            {/* 3 days and 7 days: Show temperature boxes */}
+            {(type === "3days" || type === "7days") && (
+                <>
+                    <div className="flex justify-center gap-4">
+                        {data.map((d, index) => (
+                            <div key={index} className="text-center font-bold p-2">{d.date}</div>
+                        ))}
+                    </div>
+
+                    {/* Max Temperature Section */}
+                    <div className="flex items-center gap-4">
+                        <div className="text-xl font-bold">Max Temperature</div>
+                        <div className="flex justify-start gap-4 flex-wrap">
+                            {data
+                                .filter((d) => d.maxTemperature !== undefined && d.maxTemperature !== null)
+                                .map((d, index) => (
+                                    <TemperatureBox
+                                        key={`temp-${index}`}
+                                        temperature={d.maxTemperature!}
+                                        feelsLike={0}
+                                        label={d.date || ""}
+                                    />
+                                ))}
+                        </div>
+                    </div>
+
+                    {/* Feels Like Section */}
+                    <div className="flex items-center gap-4">
+                        <div className="text-xl font-bold">Max Apparent Temperature</div>
+                        <div className="flex justify-start gap-4 flex-wrap">
+                            {data
+                                .filter((d) => d.maxFeelsLike !== undefined && d.maxFeelsLike !== null)
+                                .map((d, index) => (
+                                    <TemperatureBox
+                                        key={`feelslike-${index}`}
+                                        temperature={d.maxFeelsLike!}
+                                        feelsLike={0}
+                                        label={d.date || ""}
+                                    />
+                                ))}
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {/* Disclaimer Section */}
+            <div className="flex justify-end mt-4 text-gray-500 text-sm">
+                <p>
+                    Disclaimer: Weather data is sourced from OpenMeteo. OpenMeteo reserves the right of final interpretation.
+                    Learn more at <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">OpenMeteo</a>.
+                </p>
             </div>
-        );
-    }
-
-    return null;
+        </div>
+    );
 }
-
