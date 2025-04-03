@@ -113,7 +113,7 @@ export default function HeatAlert() {
       <UserLocationMap onLocationUpdate={handleLocationUpdate} lat={latitude} lng={longitude} />
 
       {/* Weather data display */}
-      <div className="flex justify-between items-center mt-5">
+      <div className="flex justify-between items-center mt-4">
         <h2 className="text-2xl font-bold text-orange-500">Heat Severity</h2>
 
         <div className="flex items-center gap-2">

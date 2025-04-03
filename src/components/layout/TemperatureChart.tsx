@@ -7,8 +7,8 @@ interface TemperatureChartProps {
 
 export default function TemperatureChart({ data }: TemperatureChartProps) {
     return (
-        <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+        <ResponsiveContainer width="90%" height={220}>
+            <LineChart data={data} margin={{ top: 10, right: 20, left: 20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="time" interval={1} tickFormatter={(value) => value.replace(":00", "")} label={{ value: "Time", position: "insideRight", offset: -5 }} />
                 <YAxis label={{ value: "Temp(°C)", angle: -90, position: "insideLeft" }} />
