@@ -21,30 +21,30 @@ export default function useWeather(lat: number, lng: number): WeatherData {
   useEffect(() => {
     async function fetchWeather() {
         try {
-            const params = {
-                latitude: lat,
-                longitude: lng,
-                hourly: "temperature_2m",
-                current: "temperature_2m",
-            };
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=temperature_2m&current_weather=true`;
-            console.log("Fetching weather data from:", url);
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=temperature_2m_max,apparent_temperature_max&hourly=temperature_2m&timezone=GMT`;
             const response = await fetch(url);
             const data = await response.json();
-            console.log("Weather API response:", data);
 
-            if (!data || !data.current_weather || !data.hourly) {
+            if (!data.daily || !data.hourly) {
                 throw new Error("Incomplete weather data received");
             }
 
-            const currentTemperature = data.current_weather.temperature;
+            const currentTemperature = data.current_weather?.temperature;
             const hourlyTemperature = data.hourly.temperature_2m;
-            const hourlyTime = data.hourly.time.map((t: string) => new Date(t));
+            const hourlyTime = data.hourly.time;
+
+            // 提取每日最高温度和最高体感温度
+            const dailyMaxTemperature = data.daily.temperature_2m_max;
+            const dailyMaxFeelsLike = data.daily.apparent_temperature_max;
+            const dailyTime = data.daily.time;
 
             setWeatherData({
                 currentTemperature,
                 hourlyTemperature,
                 hourlyTime,
+                dailyMaxTemperature,
+                dailyMaxFeelsLike,
+                dailyTime,
                 timezone: data.timezone,
                 error: null,
             });
@@ -61,7 +61,6 @@ export default function useWeather(lat: number, lng: number): WeatherData {
         fetchWeather();
     }
 }, [lat, lng]);
-
 
   return weatherData;
 }

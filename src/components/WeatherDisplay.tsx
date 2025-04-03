@@ -45,20 +45,19 @@ export default function WeatherDisplay({ type, data }: WeatherDisplayProps) {
 
     // **3days** 和 **7days**: 显示汇总温度块
     if (type === "3days" || type === "7days") {
-        const summarizedData = summarizeDailyData(data);
         return (
             <div className="flex flex-col items-center justify-center gap-2 mt-4">
                 <div className="flex justify-center gap-4">
-                    {summarizedData.map((d, index) => (
+                    {data.map((d, index) => (
                         <div key={index} className="text-center font-bold p-2">{d.date}</div>
                     ))}
                 </div>
                 <div className="flex justify-center gap-4">
-                    {summarizedData.map((d, index) => (
+                    {data.map((d, index) => (
                         <TemperatureBox
                             key={index}
-                            temperature={d.temperature}
-                            feelsLike={d.feelsLike}
+                            temperature={d.maxTemperature}
+                            feelsLike={d.maxFeelsLike}
                             label={d.date}
                         />
                     ))}
@@ -69,3 +68,4 @@ export default function WeatherDisplay({ type, data }: WeatherDisplayProps) {
 
     return null;
 }
+

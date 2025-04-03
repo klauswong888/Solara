@@ -31,25 +31,20 @@ export default function HeatAlert() {
   // Transform weather data for display
   const transformedData = Array.isArray(weatherData.hourlyTime)
     ? weatherData.hourlyTime.map((time, index) => ({
-      date: new Date(time).toLocaleString("en-GB", { weekday: "long", day: "numeric", month: "short" }),  // e.g., "Mon, 1 Jan"
+      date: new Date(time).toLocaleString("en-GB", { weekday: "long", day: "numeric", month: "short" }),
       time: new Date(time).toLocaleString("en-GB", { hour: "2-digit" }),
       temperature: weatherData.hourlyTemperature[index],
-      feelsLike: weatherData.hourlyTemperature[index],
     }))
     : [];
 
-  // Data filtering based on selected tab
-  const filteredData = (() => {
-    if (tab === "today") {
-      return transformedData.slice(0, 24);  // 24 Hours
-    } else if (tab === "3days") {
-      return transformedData.slice(0, 72);  // 72 Hours
-    } else if (tab === "7days") {
-      return transformedData.slice(0, 168); // 168 Hours
-    }
-    return [];
-  })();
-
+  // Filter data based on selected tab
+  const dailyTransformedData = Array.isArray(weatherData.dailyTime)
+    ? weatherData.dailyTime.map((time, index) => ({
+      date: new Date(time).toLocaleString("en-GB", { weekday: "long", day: "numeric", month: "short" }),
+      maxTemperature: weatherData.dailyMaxTemperature[index],
+      maxFeelsLike: weatherData.dailyMaxFeelsLike[index],
+    }))
+    : [];
 
   // console.log("Weather data:", weatherData);
 
@@ -140,8 +135,10 @@ export default function HeatAlert() {
       </div>
 
       <div className="mt-4">
-        {filteredData.length > 0 ? (
-          <WeatherDisplay type={tab} data={filteredData} />
+        {tab === "today" && transformedData.length > 0 ? (
+          <WeatherDisplay type={tab} data={transformedData} />
+        ) : dailyTransformedData.length > 0 ? (
+          <WeatherDisplay type={tab} data={dailyTransformedData} />
         ) : (
           <p>Loading weather data...</p>
         )}
