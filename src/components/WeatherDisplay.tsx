@@ -4,7 +4,29 @@ import TemperatureChart from "./layout/TemperatureChart";
 
 interface WeatherDisplayProps {
     type: "today" | "3days" | "7days";
-    data: { date: string; temperature: number; feelsLike: number }[];
+    data: { date: string; time: string; temperature: number; feelsLike: number }[];
+}
+
+// Summarize daily data
+function summarizeDailyData(data: { date: string; temperature: number; feelsLike: number }[]) {
+    const dailySummary: { date: string; temperature: number; feelsLike: number }[] = [];
+    const dailyData: { [key: string]: { maxTemp: number; maxFeelsLike: number } } = {};
+
+    data.forEach((d) => {
+        const day = d.date;
+        if (!dailyData[day]) {
+            dailyData[day] = { maxTemp: d.temperature, maxFeelsLike: d.feelsLike };
+        } else {
+            dailyData[day].maxTemp = Math.max(dailyData[day].maxTemp, d.temperature);
+            dailyData[day].maxFeelsLike = Math.max(dailyData[day].maxFeelsLike, d.feelsLike);
+        }
+    });
+
+    for (const [day, values] of Object.entries(dailyData)) {
+        dailySummary.push({ date: day, temperature: values.maxTemp, feelsLike: values.maxFeelsLike });
+    }
+
+    return dailySummary;
 }
 
 export default function WeatherDisplay({ type, data }: WeatherDisplayProps) {
@@ -12,21 +34,38 @@ export default function WeatherDisplay({ type, data }: WeatherDisplayProps) {
         return <p>No weather data available.</p>;
     }
 
+    // **Today**: 显示折线图
     if (type === "today") {
-        // Show temperature chart for "today"
         return (
             <TemperatureChart
-                data={data.map((d) => ({ time: d.date, temperature: d.temperature }))}
+                data={data.map((d) => ({ time: d.time, temperature: d.temperature }))}
             />
         );
     }
 
-    // Show temperature boxes for "3days" or "7days"
-    return (
-        <div className="grid grid-cols-7 gap-2">
-            {data.map((d, index) => (
-                <TemperatureBox key={index} temperature={d.temperature} label={d.date} />
-            ))}
-        </div>
-    );
+    // **3days** 和 **7days**: 显示汇总温度块
+    if (type === "3days" || type === "7days") {
+        const summarizedData = summarizeDailyData(data);
+        return (
+            <div className="flex flex-col items-center justify-center gap-2 mt-4">
+                <div className="flex justify-center gap-4">
+                    {summarizedData.map((d, index) => (
+                        <div key={index} className="text-center font-bold p-2">{d.date}</div>
+                    ))}
+                </div>
+                <div className="flex justify-center gap-4">
+                    {summarizedData.map((d, index) => (
+                        <TemperatureBox
+                            key={index}
+                            temperature={d.temperature}
+                            feelsLike={d.feelsLike}
+                            label={d.date}
+                        />
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
+    return null;
 }

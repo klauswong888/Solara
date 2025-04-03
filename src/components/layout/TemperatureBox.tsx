@@ -2,6 +2,7 @@ import React from "react";
 
 interface TemperatureBoxProps {
     temperature: number;
+    feelsLike: number;
     label: string;
 }
 
@@ -12,13 +13,18 @@ function getColorByTemperature(temp: number): string {
     return "bg-red-600";
 }
 
-export default function TemperatureBox({ temperature, label }: TemperatureBoxProps) {
-    const colorClass = getColorByTemperature(temperature);
+export default function TemperatureBox({ temperature, feelsLike, label }: TemperatureBoxProps) {
+    const tempColorClass = getColorByTemperature(temperature);
+    const feelsLikeColorClass = getColorByTemperature(feelsLike);
 
     return (
-        <div className={`p-2 text-center ${colorClass} rounded-md m-1`}>
-            <p>{label}</p>
-            <p className="font-bold">{temperature}°C</p>
+        <div className="flex flex-col items-center justify-center">
+            <div className={`p-2 text-center ${tempColorClass} rounded-md m-1 w-24`}>
+                <p className="font-bold">{temperature}°C</p>
+            </div>
+            <div className={`p-2 text-center ${feelsLikeColorClass} rounded-md m-1 w-24`}>
+                <p className="font-bold">{feelsLike}°C</p>
+            </div>
         </div>
     );
 }
