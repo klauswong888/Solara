@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-export default function HeatAlert() {
-  return (
-    <div>
-      <h2 className="text-2xl font-bold">Heatwave Alert</h2>
-      <p className="mt-2">Monitor dangerous heat levels and keep your workers safe.</p>
-    </div>
-  );
-}
-=======
 import { useState, useRef, useEffect } from "react";
 import UserLocationMap from "../components/UserLocationMap";
 import { fetchTimeZone } from "../components/api/geolocation";
@@ -95,8 +85,8 @@ export default function HeatAlert() {
   }, []);
 
   return (
-    <div>
-      <div className="flex items-center gap-x-4 justify-between w-full">
+    <div className="w-full flex flex-col gap-6 px-4">
+      <div className="flex flex-wrap gap-4 items-center justify-between w-full">
         <h2 className="text-2xl font-bold text-orange-500 whitespace-nowrap">Choose your location</h2>
 
         <input
@@ -105,7 +95,7 @@ export default function HeatAlert() {
           type="text"
           onChange={(e) => setAddress(e.target.value)}
           placeholder="Enter a location"
-          className="flex-1 min-w-40 max-w-2xl px-4 py-2 border-2 border-gray-500 rounded-md"
+          className="flex-1 min-w-[150px] max-w-2xl px-4 py-2 border-2 border-gray-500 rounded-md"
         />
 
         <div className="flex gap-x-2">
@@ -123,10 +113,10 @@ export default function HeatAlert() {
       <UserLocationMap onLocationUpdate={handleLocationUpdate} lat={latitude} lng={longitude} />
 
       {/* Weather data display */}
-      <div className="flex justify-between items-center mt-4">
-        <h2 className="text-2xl font-bold text-orange-500">Heat Severity</h2>
+      <div className="flex flex-wrap justify-between items-center gap-4 mt-4 w-full">
+        <h2 className="text-2xl font-bold text-orange-500 whitespace-nowrap">Heat Severity</h2>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {["next24hours", "3days", "7days"].map((t) => (
             <button
               key={t}
@@ -146,7 +136,7 @@ export default function HeatAlert() {
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="w-full">
         {tab === "next24hours" && transformedData.length > 0 ? (
           <WeatherDisplay type="next24hours" data={transformedData} />
         ) : (tab === "3days" || tab === "7days") && dailyTransformedData.length > 0 ? (
@@ -158,4 +148,3 @@ export default function HeatAlert() {
     </div>
   );
 }
->>>>>>> origin/BowenYu
