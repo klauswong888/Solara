@@ -1,15 +1,18 @@
 // backend/db.js
 const { Pool } = require('pg');
 
+require('dotenv').config();
+
 const pool = new Pool({
-  host: 'solara.cnocc4k2osed.ap-southeast-2.rds.amazonaws.com',
-  user: 'postgres',
-  password: 'Fit5120!',
-  database: 'postgres',
-  port: 5432,
+  host: process.env.PG_HOST,
+  user: process.env.PG_USER,
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE,
+  port: parseInt(process.env.PG_PORT, 10),
   ssl: {
-    rejectUnauthorized: false // 让 Node.js 信任 AWS 提供的证书
+    rejectUnauthorized: false
   }
 });
+
 
 module.exports = pool;
